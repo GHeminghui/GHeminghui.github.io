@@ -125,19 +125,19 @@ a{
 #MainBox {
 	cursor: pointer;
 	position: absolute;
-	text-align: center;
+	text-align: left;
 	width: 200px;
 	height: 200px;
-	left: calc(50% - 100px);
+	left: calc(0 - 100px);
 	top: calc(50% - 100px);
-	background: #fff no-repeat center center;
+	background: #fff no-repeat left left;
 	background-size: 190px;
 	border-radius: 6px;
 	box-shadow: 0px 2px 7px rgba(0,0,0,0.3);
     opacity: 0;
 	transition: all 1s ease-in-out;
 	transform-style: preserve-3d;
-    transform-origin: center center;
+    transform-origin: left left;
     overflow: hidden;
 }
 #btc-key {
