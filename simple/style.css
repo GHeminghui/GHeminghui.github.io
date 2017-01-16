@@ -128,7 +128,7 @@ a{
 	text-align: center;
 	width: 200px;
 	height: 200px;
-	left: calc(0 - 100px);
+	left: calc(50% - 100px);
 	top: calc(50% - 100px);
 	background: #fff no-repeat center center;
 	background-size: 190px;
