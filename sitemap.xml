@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.devheminghui.cn/history/index.html</loc>
+    
+    <lastmod>2017-01-18T07:15:23.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.devheminghui.cn/about/index.html</loc>
     
     <lastmod>2017-01-18T07:12:07.000Z</lastmod>
@@ -54,13 +61,6 @@
     <loc>http://www.devheminghui.cn/comments_list/index.html</loc>
     
     <lastmod>2017-01-17T04:35:21.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.devheminghui.cn/history/index.html</loc>
-    
-    <lastmod>2017-01-14T09:09:14.000Z</lastmod>
     
   </url>
   
