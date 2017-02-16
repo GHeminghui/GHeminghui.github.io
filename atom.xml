@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.devheminghui.cn/"/>
-  <updated>2017-01-17T04:56:44.000Z</updated>
+  <updated>2017-02-16T09:55:52.000Z</updated>
   <id>http://www.devheminghui.cn/</id>
   
   <author>
@@ -14,6 +14,82 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JS交互之JavaScriptCore</title>
+    <link href="http://www.devheminghui.cn/2017/01/18/JS%E4%BA%A4%E4%BA%92%E4%B9%8BJavaScriptCore/"/>
+    <id>http://www.devheminghui.cn/2017/01/18/JS交互之JavaScriptCore/</id>
+    <published>2017-01-18T07:20:32.000Z</published>
+    <updated>2017-02-16T09:55:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>截止目前，iOS开发中经常用到的js交互方式大概有三种，分别是JavaScriptCore，拦截协议，以及基于拦截协议的第三方开源项目（例如<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavaScriptBridge</a>）;这篇文章首先介绍比较高效，学习成本相对较低的JavaScriptCore方式。</p>
+<ul>
+<li>基本概念</li>
+</ul>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">* JSContext：JSContext是代表<span class="keyword">JS</span>的执行环境，通过-evaluateScript:方法就可以执行一<span class="keyword">JS</span>代码</div><div class="line"></div><div class="line">* JSValue：JSValue封装了<span class="keyword">JS</span>与ObjC中的对应的类型，以及调用<span class="keyword">JS</span>的API等</div><div class="line"></div><div class="line">* JSExport：JSExport是一个协议，遵守此协议，就可以定义我们自己的协议，在协议中声明的API都会在<span class="keyword">JS</span>中暴露出来，才能调用</div></pre></td></tr></table></figure>
+<ul>
+<li>基本使用讲解</li>
+</ul>
+<p>我们通过举个栗子🌰，来感受通过JavaScriptCore实现js和oc之间的交互。</p>
+<p>首先，我们准备一段html代码，当然要包含相应的js代码（对js不熟悉的也没关系，继续往下看）：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">\</span>"<span class="attr">margin-top:</span> <span class="attr">100px</span>\"&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Test how to use objective-c call js<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line"><span class="comment">&lt;!--1.进入商品详情按钮--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">\</span>"<span class="attr">button</span>\" <span class="attr">value</span>=<span class="string">\</span>"商品详情\" <span class="attr">onclick</span>=<span class="string">\</span>"<span class="attr">OCModel.callGoodsDetail</span>(<span class="attr">param1</span>)\"&gt;</span></div><div class="line"><span class="comment">&lt;!--2.加入购物车按钮--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">\</span>"<span class="attr">button</span>\" <span class="attr">value</span>=<span class="string">\</span>"加入购物车\" <span class="attr">onclick</span>=<span class="string">\</span>"<span class="attr">callAddShoppingCart</span>('<span class="attr">C10640155508000B0601</span>')\"&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line"><span class="comment">&lt;!--3.进入店铺主页按钮--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">\</span>"<span class="attr">button</span>\" <span class="attr">value</span>=<span class="string">\</span>"进入店铺主页 \" <span class="attr">onclick</span>=<span class="string">\</span>"<span class="attr">OCModel.callStore</span>('<span class="attr">S16092209</span>')\"&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">\</span>"<span class="attr">button</span>\" <span class="attr">value</span>=<span class="string">\</span>"<span class="attr">Call</span> <span class="attr">ObjC</span> <span class="attr">func</span> <span class="attr">with</span> <span class="attr">JSON</span> <span class="attr">and</span> <span class="attr">ObjC</span> <span class="attr">call</span> <span class="attr">js</span> <span class="attr">func</span> <span class="attr">to</span> <span class="attr">pass</span> <span class="attr">args.</span>\" <span class="attr">onclick</span>=<span class="string">\</span>"<span class="attr">OCModel.jsCallObjcAndObjcCallJsWithDict</span>(&#123;'<span class="attr">name</span>'<span class="attr">:</span> '<span class="attr">testname</span>', '<span class="attr">age</span>'<span class="attr">:</span> <span class="attr">10</span>, '<span class="attr">height</span>'<span class="attr">:</span> <span class="attr">170</span>&#125;)\"&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">\</span>"<span class="attr">jsParamFuncSpan</span>\" <span class="attr">style</span>=<span class="string">\</span>"<span class="attr">color:</span> <span class="attr">red</span>; <span class="attr">font-size:</span> <span class="attr">50px</span>;\"&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript"></span></div><div class="line">    <span class="keyword">var</span> callAddShoppingCart = <span class="function"><span class="keyword">function</span><span class="params">(goodsId)</span> </span>&#123;</div><div class="line">        OCModel.addShoppingCart(goodsId);</div><div class="line">    &#125;</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这个html页面比较简单，只有几个按钮；</p>
+<p>然后就是JSContext中注入模型，前面说过JSContext是js的执行环境，相当于oc和js之间的一个桥梁，可以用对象之间的映射关系来理解注入过程。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)webViewDidFinishLoad:(<span class="built_in">UIWebView</span> *)webView</div><div class="line">&#123;</div><div class="line">    <span class="comment">//1.获取JSContext</span></div><div class="line">    <span class="keyword">self</span>.jsContext = [webView valueForKeyPath:<span class="string">@"documentView.webView.mainFrame.javaScriptContext"</span>];</div><div class="line">    <span class="comment">//2.注入名为OCModel的模型，并和自身关联</span></div><div class="line">    <span class="keyword">self</span>.jsContext[<span class="string">@"OCModel"</span>] = <span class="keyword">self</span>;</div><div class="line">    </div><div class="line">    <span class="comment">//3.异常处理，一般加上比较好</span></div><div class="line">    <span class="keyword">self</span>.jsContext.exceptionHandler = ^(JSContext *context, JSValue *exception)&#123;</div><div class="line">        <span class="comment">//异常处理</span></div><div class="line">        context.exception = exception;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,exception);</div><div class="line">    &#125;;</div><div class="line">    </div><div class="line">    <span class="comment">//设置标题</span></div><div class="line">    <span class="built_in">NSString</span> *title = [webView stringByEvaluatingJavaScriptFromString:<span class="string">@"document.title"</span>];</div><div class="line">    <span class="keyword">self</span>.title = title == <span class="literal">nil</span> ? <span class="string">@""</span> : title;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再者，要实现真正的交互，到这一步还是不够的，最重要的一点是注入的模型还需要满足相关协议；前面说过，这个协议也同时要遵守JSExport协议（ 只有遵守了JSExport协议，js代码才能通过JSContext调用协议中的函数 ），栗子中协议如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> js和OC交互协议</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">JavaScriptObjectiveCDelegate</span> &lt;<span class="title">JSExport</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">//查看商品详情</span></div><div class="line">- (<span class="keyword">void</span>)callGoodsDetail:(<span class="built_in">NSString</span> *)goodsId;</div><div class="line"><span class="comment">//添加购物车</span></div><div class="line">- (<span class="keyword">void</span>)addShoppingCart:(<span class="built_in">NSString</span> *)goodsId;</div><div class="line"><span class="comment">//查看卖家店铺</span></div><div class="line">- (<span class="keyword">void</span>)callStore:(<span class="built_in">NSString</span> *)storeId;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>最后，剩下的就是在注入模型中实现这个协议就行了。</p>
+<ul>
+<li>进阶用法</li>
+</ul>
+<p>前面陈述的是，oc通过注入模型，将协议方法暴露给js，js则通过JSContext调用oc方法实现交互；既然JSContext是js和oc交互的桥梁，那也能通过JSContext实现相反的过程（oc调用js）；接着上面的例子，通过回调来体会oc调用js。</p>
+<p>1，首先我们得修改一下上面的html代码的javaScript部分：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">......</div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript"></span></div><div class="line">    <span class="keyword">var</span> callAddShoppingCart = <span class="function"><span class="keyword">function</span><span class="params">(goodsId)</span> </span>&#123;</div><div class="line">        OCModel.addShoppingCart(goodsId);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> funcCallback = <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</div><div class="line">        alert(<span class="string">'success'</span>);</div><div class="line">    &#125;</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">......</div></pre></td></tr></table></figure>
+<p>2， 接下来就是用oc通过JSContext调用js，来实现回调了</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#pragma mark - JavaScriptObjectiveCDelegate</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)addShoppingCart:(<span class="built_in">NSString</span> *)goodsId</div><div class="line">&#123;</div><div class="line"><span class="comment">//添加完购物车，回调到html页面</span></div><div class="line">    JSValue *shareCallback = <span class="keyword">self</span>.jsContext[<span class="string">@"funcCallback"</span>];</div><div class="line">    [shareCallback callWithArguments:<span class="literal">nil</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>最后，介绍几个oc调用js的其他方式（通常用来执行小段js代码比较有用）:</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// UIWebView的方法</span></div><div class="line"><span class="selector-tag">-</span> (nullable NSString *)<span class="selector-tag">stringByEvaluatingJavaScriptFromString</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">script</span>;</div><div class="line"> </div><div class="line"><span class="comment">// JavaScriptCore中JSContext的方法</span></div><div class="line"><span class="selector-tag">-</span> (JSValue *)<span class="selector-tag">evaluateScript</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">script</span>;</div><div class="line"><span class="selector-tag">-</span> (JSValue *)<span class="selector-tag">evaluateScript</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">script</span> <span class="selector-tag">withSourceURL</span><span class="selector-pseudo">:(NSURL</span> *)<span class="selector-tag">sourceURL</span></div></pre></td></tr></table></figure>
+<p>以上方式的使用小场景参考：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取当前页面的title</span></div><div class="line">NSString *title = [webview <span class="string">stringByEvaluatingJavaScriptFromString:</span>@<span class="string">"document.title"</span>];</div><div class="line"> </div><div class="line"><span class="comment">// 获取当前页面的url</span></div><div class="line">NSString *url = [webview <span class="string">stringByEvaluatingJavaScriptFromString:</span>@<span class="string">"document.location.href"</span>];</div></pre></td></tr></table></figure>
+<p>本文前人的基础上按自己的理解补充总结，不足之处，欢迎留言指正！—</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;截止目前，iOS开发中经常用到的js交互方式大概有三种，分别是JavaScriptCore，拦截协议，以及基于拦截协议的第三方开源项目（例如&lt;a href=&quot;https://github.com/marcuswestin/WebViewJavascriptBridge&quot; t
+    
+    </summary>
+    
+    
+      <category term="JavaScriptCore" scheme="http://www.devheminghui.cn/tags/JavaScriptCore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>年终</title>
+    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
+    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
+    <published>2017-01-18T07:20:32.000Z</published>
+    <updated>2017-02-16T09:53:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
+<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
+<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
+<blockquote>
+<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>如何使用hexo搭建个人站</title>
