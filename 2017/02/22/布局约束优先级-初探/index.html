@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>布局约束优先级-初探 | Michaela</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="/css/donate.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">布局约束优先级-初探</h1><a id="logo" href="/.">Michaela</a><p class="description">三分</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/history/"><i class="fa fa-clock-o"> 历史</i></a><a href="/comments_list/"><i class="fa fa-comments"> 评论</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">布局约束优先级-初探</h1><div class="post-meta">Feb 22, 2017<span> | </span><span class="category"><a href="/categories/iOS/">iOS</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-thread-key="2017/02/22/布局约束优先级-初探/" href="/2017/02/22/布局约束优先级-初探/#comments" class="ds-thread-count"></a><div class="post-content"><p>日常iOS开发过程中，可能不太需要关注“约束优先级”这一概念；大部分页面布局的约束<code>(NSLayoutConstraint)</code>使用Storybaord提供的默认优先级<code>(priority)</code>就能解决。但是某些情况下，了解NSLayoutConstraint的priority属性，却能解决方便解决棘手的问题。</p>
+<p>下面引用苹果官方的一段话开始本文的讨论：</p>
+<blockquote>
+<p>约束不仅限于等量关系，它还可以是(&gt;=)或者(&lt;=)来描述两个属性之间的关系，由 NSLayoutRelation 定义。约束还有 1 ~ 1000的优先级，优先级为1000的约束为必须满足，优先级为 1 ~ 999 的约束为可选约束，数字越大其优先级越高，其满足的可能性越高，自动布局系统在满足了所有优先级为 1000 的约束后，会按照优先级从高到低的顺序满足可选约束。默认情况下，所有约束优先级都是 1000，即必须满足。</p>
+</blockquote>
+<p><strong>内部内容尺寸（Intrinsic Content Size）</strong></p>
+<p>我选了两个典型的优先级类型来配合讲解今天的内容：内容压缩阻力优先级（Content Compression Resistance Priority）和内容吸附性优先级（Content Hugging Priority）；每个视图都有这两个优先级。在理解压缩阻力优先级和内容吸附性优先级之前，还需要理解什么是内部内容尺寸（Intrinsic Content Size）。</p>
+<p>也许你没听说过这些概念，但其实它就在Size Inspector最下面的位置，如图，只是平时不需要关注它而已：</p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited3.jpg" alt="图一"></p>
+<p>要说明内部内容尺寸，还需要引用苹果官方的相关描述翻译内容如下：</p>
+<blockquote>
+<p>简单来说就是，像按钮、文本标签这类视图控件，在布局的时候，它们自己内部比外部布局代码更清楚自己需要多大的尺寸来显示自己的内容。而这个尺寸就是由内部内容尺寸（intrinsic content size）来传达的。这就相当于，内部内容尺寸告诉布局系统：“这个视图里面包含了一些你不能理解的内容，但是我给你指出了那些内容有多大。”</p>
+</blockquote>
+<p><strong>Content Compression Resistance 与 Content Hugging</strong></p>
+<ul>
+<li>内容压缩阻力优先级（Content Compression Resistance）</li>
+</ul>
+<p>内容压缩阻力优先级, 是指 view 阻止其视图大小被压缩到小于其内部内容尺寸的优先级, 即视图反压缩的优先级，优先级越大，视图就越不容易被压小。当自动布局系统为所有视图布局时，遇到约束要求该 view 的尺寸需要小于其内部内容尺寸会用到。</p>
+<p>一句话总结：决定着是否能压缩到小于自身内容尺寸；优先级大时，最小尺寸是内容尺寸</p>
+<ul>
+<li>内容吸附性优先级（Content Hugging）</li>
+</ul>
+<p>内容吸附性优先级, 是指 view 阻止其视图大小被拉伸到大于其内部内容尺寸的优先级，即视图反拉伸的优先级，优先级越大，视图就越不容易被拉大。</p>
+<p>一句话总结：决定是否能够拉伸到大于自身内容尺寸；优先级比较大时，最大尺寸是内容尺寸</p>
+<p><strong>实际应用场景讨论</strong></p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited2.jpg" alt="图二"></p>
+<p>如图，现有两个Lable：label1和lable2；有这样一个需求：需要lable1内容比较少时，视图尺寸随内容变化，内容比较多时，能够截断一部分显示，多余部分省略号表示；lable2不能截断显示，内容要都显示出来。</p>
+<p>按照一般步骤，首先得加五个约束（优先级为默认UILayoutPriorityRequired，必须满足）；此时会发现，storyboard有约束警告，因为自动布局系统在满足了所有约束之后，分不清是该压缩lable1，还是压缩lable2；这时应该想到修改优先级了。</p>
+<p>那么该怎么修改呢？</p>
+<p>问题中提到，lable1内容比较多时，内容截断，而且lable2不允许截断，所以lable1的内容压缩阻力优先级应该比lable2低；<br>lable1内容比较少时，尺寸随内容变化；说明lable1的抗拉伸优先级比lable2强，可以想到lable1的内容吸附性优先级高。</p>
+<p>问题最终解决方案如图：</p>
+<ul>
+<li>lable1设置：</li>
+</ul>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited3.jpg" alt="图三"></p>
+<ul>
+<li>lable2设置</li>
+</ul>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited_%E5%92%8C_Storyboard%E8%BF%9B%E9%98%B6%E5%86%85%E5%AE%B94.jpg" alt="图四"></p>
+<p>最终效果如下：</p>
+<ul>
+<li>lable1内容较少时：</li>
+</ul>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited5.jpg" alt="图五"></p>
+<ul>
+<li>lable1内容较多时，截断显示：</li>
+</ul>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited6.jpg" alt="图六"></p>
+<p>总结内容，欢迎留言提出修改意见^_^</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://www.devheminghui.cn/2017/02/22/布局约束优先级-初探/" data-id="cizgqyp7c000ywwfyz162ltpo" class="article-share-link">分享到</a><div class="tags"><a href="/tags/布局约束/">布局约束</a></div><div class="post-nav"><a href="/2017/01/18/JS交互之JavaScriptCore/" class="next">JS交互之JavaScriptCore</a></div><div data-thread-key="2017/02/22/布局约束优先级-初探/" data-title="布局约束优先级-初探" data-url="http://www.devheminghui.cn/2017/02/22/布局约束优先级-初探/" class="ds-share flat"><div class="ds-share-inline"><ul class="ds-share-icons-16"><li data-toggle="ds-share-icons-more"><a href="javascript:void(0);" class="ds-more">分享到：</a></li><li><a href="javascript:void(0);" data-service="weibo" class="ds-weibo">微博</a></li><li><a href="javascript:void(0);" data-service="qzone" class="ds-qzone">QQ空间</a></li><li><a href="javascript:void(0);" data-service="qqt" class="ds-qqt">腾讯微博</a></li><li><a href="javascript:void(0);" data-service="wechat" class="ds-wechat">微信</a></li></ul><div class="ds-share-icons-more"></div></div></div><div data-thread-key="2017/02/22/布局约束优先级-初探/" data-title="布局约束优先级-初探" data-url="http://www.devheminghui.cn/2017/02/22/布局约束优先级-初探/" data-author-key="1" class="ds-thread"></div></div></div></div><div class="pure-u-1 pure-u-md-1-4"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://www.devheminghui.cn"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网站/">网站</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Xcode/" style="font-size: 15px;">Xcode</a> <a href="/tags/Swift/" style="font-size: 15px;">Swift</a> <a href="/tags/Objective-C/" style="font-size: 15px;">Objective-C</a> <a href="/tags/iOS-10/" style="font-size: 15px;">iOS 10</a> <a href="/tags/支付/" style="font-size: 15px;">支付</a> <a href="/tags/Xcode-8/" style="font-size: 15px;">Xcode 8</a> <a href="/tags/动画/" style="font-size: 15px;">动画</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/JavaScriptCore/" style="font-size: 15px;">JavaScriptCore</a> <a href="/tags/布局约束/" style="font-size: 15px;">布局约束</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/22/布局约束优先级-初探/">布局约束优先级-初探</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/18/JS交互之JavaScriptCore/">JS交互之JavaScriptCore</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/18/年前网站打理/">年终</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-24/">如何使用hexo搭建个人站</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-23/">动画时间</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-21/">Carthage包管理体验及常见swift库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-20/">Xcode 8 新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-20-1/">Swift/OC混编之道</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-19/">兼容iOS 10</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/2016-09-18-1/">升级xcode时更换appid账户</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.objccn.io" title="ObjC中国" target="_blank">ObjC中国</a><ul></ul><a href="http://nshipster.cn" title="NSHipster中文版" target="_blank">NSHipster中文版</a><ul></ul><a href="https://github.com/GHeminghui" title="Github" target="_blank">Github</a><ul></ul><a href="http://wiki.jikexueyuan.com" title="资料wiki" target="_blank">资料wiki</a><ul></ul><a href="http://acm.sdibt.edu.cn" title="算法online平台" target="_blank">算法online平台</a><ul></ul><a href="https://www.haomwei.com/technology/maupassant-hexo.html" title="个人站入门" target="_blank">个人站入门</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Michaela.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script>var duoshuoQuery = {short_name:'heminghui'};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
