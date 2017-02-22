@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.devheminghui.cn/"/>
-  <updated>2017-02-22T09:20:36.000Z</updated>
+  <updated>2017-02-22T09:30:16.000Z</updated>
   <id>http://www.devheminghui.cn/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://www.devheminghui.cn/2017/02/22/%E5%B8%83%E5%B1%80%E7%BA%A6%E6%9D%9F%E4%BC%98%E5%85%88%E7%BA%A7-%E5%88%9D%E6%8E%A2/"/>
     <id>http://www.devheminghui.cn/2017/02/22/布局约束优先级-初探/</id>
     <published>2017-02-22T06:22:24.000Z</published>
-    <updated>2017-02-22T09:20:36.000Z</updated>
+    <updated>2017-02-22T09:30:16.000Z</updated>
     
-    <content type="html"><![CDATA[<p>日常iOS开发过程中，可能不太需要关注“约束优先级”这一概念；大部分页面布局的约束<code>(NSLayoutConstraint)</code>使用Storybaord提供的默认优先级<code>(priority)</code>就能解决。但是某些情况下，了解NSLayoutConstraint的priority属性，却能解决方便解决棘手的问题。</p>
+    <content type="html"><![CDATA[<p>日常iOS开发过程中，可能不太需要关注“约束优先级”这一概念；大部分页面布局的约束(NSLayoutConstraint)使用Storybaord提供的默认优先级(priority)就能解决。但是某些情况下，了解NSLayoutConstraint的priority属性，却能解决方便解决棘手的问题。</p>
 <p>下面引用苹果官方的一段话开始本文的讨论：</p>
 <blockquote>
 <p>约束不仅限于等量关系，它还可以是(&gt;=)或者(&lt;=)来描述两个属性之间的关系，由 NSLayoutRelation 定义。约束还有 1 ~ 1000的优先级，优先级为1000的约束为必须满足，优先级为 1 ~ 999 的约束为可选约束，数字越大其优先级越高，其满足的可能性越高，自动布局系统在满足了所有优先级为 1000 的约束后，会按照优先级从高到低的顺序满足可选约束。默认情况下，所有约束优先级都是 1000，即必须满足。</p>
@@ -53,29 +53,15 @@
 <p>那么该怎么修改呢？</p>
 <p>问题中提到，lable1内容比较多时，内容截断，而且lable2不允许截断，所以lable1的内容压缩阻力优先级应该比lable2低；<br>lable1内容比较少时，尺寸随内容变化；说明lable1的抗拉伸优先级比lable2强，可以想到lable1的内容吸附性优先级高。</p>
 <p>问题最终解决方案如图：</p>
-<ul>
-<li>lable1设置：</li>
-</ul>
-<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited3.jpg" alt="图三"></p>
-<ul>
-<li>lable2设置</li>
-</ul>
-<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited_%E5%92%8C_Storyboard%E8%BF%9B%E9%98%B6%E5%86%85%E5%AE%B94.jpg" alt="图四"></p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited3.jpg" alt="图三-lable1设置"><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited_%E5%92%8C_Storyboard%E8%BF%9B%E9%98%B6%E5%86%85%E5%AE%B94.jpg" alt="图四-lable2设置"></p>
 <p>最终效果如下：</p>
-<ul>
-<li>lable1内容较少时：</li>
-</ul>
-<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited5.jpg" alt="图五"></p>
-<ul>
-<li>lable1内容较多时，截断显示：</li>
-</ul>
-<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited6.jpg" alt="图六"></p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited5.jpg" alt="图五"><img src="http://7xs3rb.com1.z0.glb.clouddn.com/Main_storyboard_%E2%80%94_Edited6.jpg" alt="图六"></p>
 <p>总结内容，欢迎留言提出修改意见^_^</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;日常iOS开发过程中，可能不太需要关注“约束优先级”这一概念；大部分页面布局的约束&lt;code&gt;(NSLayoutConstraint)&lt;/code&gt;使用Storybaord提供的默认优先级&lt;code&gt;(priority)&lt;/code&gt;就能解决。但是某些情况下，了解NSLay
+      &lt;p&gt;日常iOS开发过程中，可能不太需要关注“约束优先级”这一概念；大部分页面布局的约束(NSLayoutConstraint)使用Storybaord提供的默认优先级(priority)就能解决。但是某些情况下，了解NSLayoutConstraint的priority属性，却
     
     </summary>
     
@@ -83,6 +69,30 @@
     
     
       <category term="布局约束" scheme="http://www.devheminghui.cn/tags/%E5%B8%83%E5%B1%80%E7%BA%A6%E6%9D%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>年终</title>
+    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
+    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
+    <published>2017-01-18T07:20:32.000Z</published>
+    <updated>2017-02-16T09:53:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
+<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
+<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
+<blockquote>
+<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
+    
+    </summary>
+    
     
   </entry>
   
@@ -135,30 +145,6 @@
     
     
       <category term="JavaScriptCore" scheme="http://www.devheminghui.cn/tags/JavaScriptCore/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>年终</title>
-    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
-    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
-    <published>2017-01-18T07:20:32.000Z</published>
-    <updated>2017-02-16T09:53:54.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
-<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
-<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
-<blockquote>
-<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
-    
-    </summary>
-    
     
   </entry>
   
