@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.devheminghui.cn/"/>
-  <updated>2017-02-22T09:30:16.000Z</updated>
+  <updated>2017-03-15T10:01:56.000Z</updated>
   <id>http://www.devheminghui.cn/</id>
   
   <author>
@@ -14,6 +14,71 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Git使用实录</title>
+    <link href="http://www.devheminghui.cn/2017/03/15/Git%E4%BD%BF%E7%94%A8%E5%AE%9E%E5%BD%95/"/>
+    <id>http://www.devheminghui.cn/2017/03/15/Git使用实录/</id>
+    <published>2017-03-15T05:59:57.000Z</published>
+    <updated>2017-03-15T10:01:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Git是一个优秀的分布式版本管理系统，相信大家对Git或多或少有所了解了已经，网上相关的资料也是不少，这里不打算解释相关理论，但最后会推荐几个不错的资料方便需要的人脑补。正如标题所言，这篇文章目的是从实用角度，帮助大家快速上手操作。完全来自项目总结，难免疏漏。</p>
+<p>一.添加Git账户</p>
+<p>使用git进行版本管理，最终一定会需要提交到公司内部的git仓库的，所以会有一个对应的Git仓库地址，包括用户名，密码。在得到仓库地址，用户名及密码之后，需要在Xcode中添加仓库。</p>
+<p>xcode菜单栏开始 选择Xcode-&gt;preference，结果如图：</p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/xcode-git.jpg" alt=""></p>
+<p>点击“+”，选择“Add Respository”,即可添加仓库，相关页面如下：</p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/xcode-git-2.jpg" alt=""></p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/xcode-git-3.jpg" alt=""></p>
+<p>将前面说的仓库地址，用户名及密码填写完，点击Add即可。</p>
+<p><strong>备注：</strong><br>1）如果使用的是SVN，<code>Type</code>选择<code>Subversion</code></p>
+<p>2）<code>Authentication</code>(认证方式)，可以视情况选择<code>SSH Keys</code>,这时只需要密码就行。另外如果电脑还没将<code>public keys</code>添加到服务器，可以先参考github的配置方式，这里给出一篇博客<a href="http://blog.csdn.net/qq_34101611/article/details/52057666" target="_blank" rel="external">博客</a>供参考。</p>
+<p>二.Xcode版本管理工具实战参考</p>
+<p>Xcode版本管理菜单有点简陋，但是基本能满足日常开发需要了；如果再搭配终端命令来辅助的话（最后一部分会详细介绍），基本就没什么可担心的了。</p>
+<p>xcode版本控制菜单如下：<br><img src="http://7xs3rb.com1.z0.glb.clouddn.com/xcode-git-5.jpg" alt="xcode版本控制菜单"></p>
+<p>从上至下有六部分（以横线区分），现在一一描述：</p>
+<p>2.1 working copies</p>
+<p>这部分主要进行分支操作（创建分支，切换分支及合并分支），在这里也有对仓库进行配置的入口，如图：<br><img src="http://7xs3rb.com1.z0.glb.clouddn.com/xcode-git-6.jpg" alt=""></p>
+<p>2.2 Check Out</p>
+<p>从远程仓库拉取一份新的代码，注意拉下来的代码在提交前需要先做一些配置，否则会提交出错:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --global user<span class="selector-class">.name</span> <span class="string">"mignhuihe"</span></div><div class="line">$ git config --global user<span class="selector-class">.email</span> minghuihe@example.com</div></pre></td></tr></table></figure>
+<p>2.3 Commit</p>
+<p>提交代码到本地仓库，特别的是Xcode中的这个菜单是<code>git add</code> 和 <code>git commit</code>的组合，就是直接提交到本地仓库；好处是效率提高了（因为实际操作中大多数<code>git add</code>命令之后，直接是<code>git commit</code>；缺点是少了提交前撤销的途径）</p>
+<p>2.4 pull </p>
+<p>拉取远程git仓库代码并进行合并操作，当然合并就有可能出现冲突，这时候可以利用第三方工具，如SourceTree，也可以用Xcode自带合并工具（一般pull之后，如果出现冲突，会自动跳到xcode手动合并的页面）</p>
+<p>关于利用Xcode解决冲突，推荐一篇不错的博客：<a href="http://fzq2016.github.io/IOS笔记/SVN版本管理/chapter9/index.html" target="_blank" rel="external">http://fzq2016.github.io/IOS笔记/SVN版本管理/chapter9/index.html</a></p>
+<p>备注：pull之前，一定要commit</p>
+<p>2.5 push</p>
+<p>提交代码到本地仓库，并且和远程代码已经合并；这时候就可以把自己的代码push到远程git服务器了(过程没有什么区别，这里不多做介绍了)</p>
+<p>2.6 Discard <em>**</em></p>
+<p>这个简单的来说就是：放弃修改；如果想放弃这个程序的修改（前提是没有commit），可以用这个命令</p>
+<p>2.7 history</p>
+<p>查看提交历史，能够详细显示其他人的提交状态（包括提交时间，修改内容）；常用的是Show modified files</p>
+<p>备注：唯一需要注意是，这个顺序不是按照时间来排的</p>
+<p><img src="http://7xs3rb.com1.z0.glb.clouddn.com/xcode-git-7.jpg" alt=""></p>
+<p>三.辅助命令</p>
+<p>这里介绍一个使用频率还算比较高的git命令，用来作为图形话工具的辅助。</p>
+<p>先了解这样一个场景：你正在做一个新功能，可能需要几天时间，而且你已经做了一部分。这是测试告诉你有一个紧急bug需要修改。这时你会怎么做？</p>
+<p>相信大部分人都遇到这个问题，当然有多种解决方案；这里介绍我比较常用的：保存工作现场。这种方式用到<code>git stash</code>命令。</p>
+<p>这里推荐几个不错关于这方面的博客：</p>
+<p><a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137602359178794d966923e5c4134bc8bf98dfb03aea3000" target="_blank" rel="external">http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137602359178794d966923e5c4134bc8bf98dfb03aea3000</a></p>
+<p><a href="http://blog.csdn.net/hudashi/article/details/7664710" target="_blank" rel="external">http://blog.csdn.net/hudashi/article/details/7664710</a></p>
+<p>最近一直在忙项目，时间仓促，以上算是一个小总结吧，方便还不了解的人查阅，已经熟悉的也欢迎提出意见建议^_^。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Git是一个优秀的分布式版本管理系统，相信大家对Git或多或少有所了解了已经，网上相关的资料也是不少，这里不打算解释相关理论，但最后会推荐几个不错的资料方便需要的人脑补。正如标题所言，这篇文章目的是从实用角度，帮助大家快速上手操作。完全来自项目总结，难免疏漏。&lt;/p&gt;
+&lt;p
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://www.devheminghui.cn/categories/iOS/"/>
+    
+    
+      <category term="Git" scheme="http://www.devheminghui.cn/tags/Git/"/>
+    
+  </entry>
   
   <entry>
     <title>布局约束优先级-初探</title>
@@ -73,30 +138,6 @@
   </entry>
   
   <entry>
-    <title>年终</title>
-    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
-    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
-    <published>2017-01-18T07:20:32.000Z</published>
-    <updated>2017-02-16T09:53:54.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
-<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
-<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
-<blockquote>
-<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>JS交互之JavaScriptCore</title>
     <link href="http://www.devheminghui.cn/2017/01/18/JS%E4%BA%A4%E4%BA%92%E4%B9%8BJavaScriptCore/"/>
     <id>http://www.devheminghui.cn/2017/01/18/JS交互之JavaScriptCore/</id>
@@ -145,6 +186,30 @@
     
     
       <category term="JavaScriptCore" scheme="http://www.devheminghui.cn/tags/JavaScriptCore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>年终</title>
+    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
+    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
+    <published>2017-01-18T07:20:32.000Z</published>
+    <updated>2017-02-16T09:53:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
+<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
+<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
+<blockquote>
+<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
+    
+    </summary>
+    
     
   </entry>
   
