@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.devheminghui.cn/"/>
-  <updated>2017-03-15T10:01:56.000Z</updated>
+  <updated>2017-04-05T09:55:27.000Z</updated>
   <id>http://www.devheminghui.cn/</id>
   
   <author>
@@ -14,6 +14,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>构造器一两点总结</title>
+    <link href="http://www.devheminghui.cn/2017/04/05/%E6%9E%84%E9%80%A0%E5%99%A8%E4%B8%80%E4%B8%A4%E7%82%B9%E6%80%BB%E7%BB%93/"/>
+    <id>http://www.devheminghui.cn/2017/04/05/构造器一两点总结/</id>
+    <published>2017-04-05T08:27:24.000Z</published>
+    <updated>2017-04-05T09:55:27.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>我们知道，swift类型中结构体，枚举，类初始化生成实例过程中都需要调用构造器；不同的是类支持继承，因此除了初始化自身属性，还需要初始化父类继承来的属性。为了简化代码复杂度，有时会直接使用父类继承来的构造器，但是默认情况下，父类构造器是不会自动继承的。这里总结下构造器自动继承的几个条件。</p>
+<p>按照官方文档，子类为所有新属性都设置默认值的前提下，构造器自动继承需要满足下列两个条件之一：</p>
+<ol>
+<li><p>如果子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器</p>
+</li>
+<li><p>如果子类提供了所有父类指定构造器的实现——无论是通过规则 1 继承过来的，还是提供了自定义实现——它将自动继承所有父类的便利构造器。</p>
+</li>
+</ol>
+<p>对于第二点，子类可以重写父类指定构造器为便利构造器，这样依然满足条件2</p>
+<p>下面，我们在代码中体会上述两点：</p>
+<h4 id="条件1"><a href="#条件1" class="headerlink" title="条件1"></a>条件1</h4><p>定义一个父类Vehical</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vehical</span></span>&#123;</div><div class="line">    <span class="keyword">var</span> currentSpeed:<span class="type">Double</span>?</div><div class="line">    <span class="keyword">var</span> desciption: <span class="type">String</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"The speed is <span class="subst">\(currentSpeed)</span>"</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">init</span>(<span class="number">_</span> speed : <span class="type">Double</span>, <span class="number">_</span> des : <span class="type">String</span>) &#123;</div><div class="line">        <span class="keyword">self</span>.currentSpeed = speed</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>(<span class="number">_</span> speed : <span class="type">Double</span>)&#123;</div><div class="line">        <span class="keyword">self</span>.<span class="keyword">init</span>(speed,<span class="string">""</span>)</div><div class="line">        <span class="keyword">self</span>.currentSpeed = speed</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Vehical 有两个属性，存储属性currentSpeed，可选类型；只读计算属性desciption</p>
+<p>此外有一个自定义指定构造器，一个自定义便利构造器</p>
+<p>现在定义一个子类Bicycle，继承Vehical</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bicycle</span>: <span class="type">Vehical&#123;</span></span></div><div class="line">    <span class="keyword">var</span> hasBasket = <span class="literal">false</span></div><div class="line">    <span class="keyword">var</span> gear : <span class="built_in">Int</span> = <span class="number">0</span> &#123;</div><div class="line">        willSet&#123;</div><div class="line">          <span class="comment">//  </span></div><div class="line">        &#125;</div><div class="line">        didSet&#123;</div><div class="line">        <span class="comment">//</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>子类Bicycle定义了两个有默认值的存储属性，满足了上述条件的前提；现在我们没有为子类实现任何自定义指定构造器，按照条件一，子类会继承父类的指定构造器，我们来尝试调用父类构造器生成子类对象，结果如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">var</span> bicycle = Bicycle.init(<span class="number">20</span>,<span class="string">""</span>)<span class="comment">//继承父类指定构造器</span></div><div class="line"><span class="function"><span class="title">print</span><span class="params">(bicycle.desciption)</span></span> <span class="comment">//结果： "The speed is Optional(20.0)\n"</span></div></pre></td></tr></table></figure>
+<p>结果和预想的一致，父类指定构造器被继承；反过来，我们在子类实现一个如下指定构造器试试，上述代码会立即报错，说明实现了自定义了子类构造器后，父类指定构造器不会继承</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">init</span><span class="params">(basket hasBasket : Bool)</span></span> &#123;</div><div class="line">    self<span class="selector-class">.hasBasket</span> = hasBasket</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="条件二"><a href="#条件二" class="headerlink" title="条件二"></a>条件二</h4><p>继续上述讨论，维持子类实现不变，我们尝试更改子类对象初始化方式，看看能不能成功</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">var</span> bicycle = Bicycle.init(<span class="number">20</span>)<span class="comment">//继承父类便利构造器</span></div><div class="line"><span class="function"><span class="title">print</span><span class="params">(bicycle.desciption)</span></span><span class="comment">//结果： "The speed is Optional(20.0)\n"</span></div></pre></td></tr></table></figure>
+<p>结果和预想的一致，没有任何错误；说明父类的便利构造器也被子类继承了</p>
+<p>此外，如果子类如下实现（重写父类指定构造器），上述验证也是通过的</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bicycle</span>: <span class="title">Vehical</span></span>&#123;</div><div class="line">    <span class="keyword">var</span> hasBasket = <span class="literal">false</span></div><div class="line">    <span class="keyword">var</span> gear : <span class="type">Int</span> = <span class="number">0</span> &#123;</div><div class="line">        <span class="keyword">willSet</span>&#123;</div><div class="line">            <span class="comment">//</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">didSet</span>&#123;</div><div class="line">            <span class="comment">//</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">  <span class="keyword">override</span> <span class="keyword">init</span>(<span class="number">_</span> speed : <span class="type">Double</span>, <span class="number">_</span> des : <span class="type">String</span>) &#123;</div><div class="line">        <span class="keyword">super</span>.<span class="keyword">init</span>(speed,des)</div><div class="line">        <span class="keyword">self</span>.hasBasket = <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>简单总结，欢迎指正～</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我们知道，swift类型中结构体，枚举，类初始化生成实例过程中都需要调用构造器；不同的是类支持继承，因此除了初始化自身属性，还需要初始化父类继承来的属性。为了简化代码复杂度，有时会直接使用父类继承来的构造器，但是默认情况下，父类构造器是不会自动继承的。这里总结下构造器自动继
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://www.devheminghui.cn/categories/iOS/"/>
+    
+    
+      <category term="Swift" scheme="http://www.devheminghui.cn/tags/Swift/"/>
+    
+  </entry>
   
   <entry>
     <title>Git使用实录</title>
@@ -138,6 +186,30 @@
   </entry>
   
   <entry>
+    <title>年终</title>
+    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
+    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
+    <published>2017-01-18T07:20:32.000Z</published>
+    <updated>2017-02-16T09:53:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
+<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
+<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
+<blockquote>
+<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>JS交互之JavaScriptCore</title>
     <link href="http://www.devheminghui.cn/2017/01/18/JS%E4%BA%A4%E4%BA%92%E4%B9%8BJavaScriptCore/"/>
     <id>http://www.devheminghui.cn/2017/01/18/JS交互之JavaScriptCore/</id>
@@ -186,30 +258,6 @@
     
     
       <category term="JavaScriptCore" scheme="http://www.devheminghui.cn/tags/JavaScriptCore/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>年终</title>
-    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
-    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
-    <published>2017-01-18T07:20:32.000Z</published>
-    <updated>2017-02-16T09:53:54.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
-<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
-<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
-<blockquote>
-<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
-    
-    </summary>
-    
     
   </entry>
   
