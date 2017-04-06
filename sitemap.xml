@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.devheminghui.cn/comments_list/index.html</loc>
+    
+    <lastmod>2017-04-06T03:24:47.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/</loc>
     
     <lastmod>2017-04-05T10:02:42.000Z</lastmod>
@@ -89,13 +96,6 @@
     <loc>http://www.devheminghui.cn/2017/01/08/2016-09-18-1/</loc>
     
     <lastmod>2017-01-17T04:51:35.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.devheminghui.cn/comments_list/index.html</loc>
-    
-    <lastmod>2017-01-17T04:35:21.000Z</lastmod>
     
   </url>
   
