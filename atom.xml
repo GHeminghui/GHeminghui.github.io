@@ -186,6 +186,34 @@
   </entry>
   
   <entry>
+    <title>年终</title>
+    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
+    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
+    <published>2017-01-18T07:20:32.000Z</published>
+    <updated>2017-04-05T10:02:42.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
+<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
+<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
+<blockquote>
+<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
+    
+    </summary>
+    
+      <category term="随笔" scheme="http://www.devheminghui.cn/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="总结" scheme="http://www.devheminghui.cn/tags/%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>JS交互之JavaScriptCore</title>
     <link href="http://www.devheminghui.cn/2017/01/18/JS%E4%BA%A4%E4%BA%92%E4%B9%8BJavaScriptCore/"/>
     <id>http://www.devheminghui.cn/2017/01/18/JS交互之JavaScriptCore/</id>
@@ -234,34 +262,6 @@
     
     
       <category term="JavaScriptCore" scheme="http://www.devheminghui.cn/tags/JavaScriptCore/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>年终</title>
-    <link href="http://www.devheminghui.cn/2017/01/18/%E5%B9%B4%E5%89%8D%E7%BD%91%E7%AB%99%E6%89%93%E7%90%86/"/>
-    <id>http://www.devheminghui.cn/2017/01/18/年前网站打理/</id>
-    <published>2017-01-18T07:20:32.000Z</published>
-    <updated>2017-04-05T10:02:42.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，关于，最新评论等；今天也算事最终完成了一个简单博客该有的功能。</p>
-<p>屋子搭建好了，接下来就需要按时写博客，写总结了，以此为来年目标。</p>
-<p>最后，附上一段杨绛的《一百岁感言》共勉！</p>
-<blockquote>
-<p>我们曾如此渴望命运的波澜<br>到最后才发现<br>人生最曼妙的风景<br>竟是内心的淡定与从容<br>我们曾如此期盼外界的认可<br>到最后才知道<br>世界是自己的<br>与他人毫无关系！<br>——杨绛<br>《一百岁感言》</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一直觉得自己不是一个爱折腾的人，博客刚搭起来的时候，也是着实简陋，当时觉得能有个属于自己的地方，发发博客就行，所以索性连“关于”都懒的写一写，空了很久；直到最近工作相对比较少，才觉得要把博客完善完善了；无奈不太懂web前端的技术，只能照着添加了一些功能，包括多说评论，历史，
-    
-    </summary>
-    
-      <category term="随笔" scheme="http://www.devheminghui.cn/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="总结" scheme="http://www.devheminghui.cn/tags/%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
